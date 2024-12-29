@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B站视频下载器</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">B站视频下载器</div>
+            <ul class="nav-menu">
+                <li><a href="#" class="active">首页</a></li>
+                <li><a href="#">下载管理</a></li>
+                <li><a href="#">视频库</a></li>
+                <li><a href="#">数据统计</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 主要内容区 -->
+    <main class="main-container">
+        <!-- 视频链接输入区 -->
+        <section class="input-section">
+            <h1>轻松下载B站视频</h1>
+            <div class="input-container">
+                <input type="text" placeholder="请输入B站视频链接..." class="video-input">
+                <button class="download-btn">开始下载</button>
+            </div>
+        </section>
+
+        <!-- 最近下载记录 -->
+        <section class="recent-downloads">
+            <h2>最近下载</h2>
+            <div class="downloads-grid">
+                <!-- 完成状态的下载卡片 -->
+                <div class="download-card">
+                    <div class="download-card__thumbnail-container">
+                        <img src="https://i0.hdslb.com/bfs/archive/sample1.jpg" alt="视频缩略图" class="download-card__thumbnail">
+                        <div class="download-card__actions">
+                            <button class="action-btn" title="播放">▶️</button>
+                            <button class="action-btn" title="删除">🗑️</button>
+                            <button class="action-btn" title="在B站打开">↗️</button>
+                        </div>
+                    </div>
+                    <div class="download-card__content">
+                        <h3 class="download-card__title">【4K】某科学的超电磁炮 第一季 经典场景合集</h3>
+                        <div class="download-card__info">
+                            <span class="quality-badge">1080P</span>
+                            <span class="size-info">890MB</span>
+                        </div>
+                        <div class="download-card__progress">
+                            <div class="download-card__progress-bar" style="width: 100%"></div>
+                        </div>
+                        <div class="download-card__status">
+                            <span class="download-card__status--completed">
+                                <i class="status-icon">✓</i>
+                                下载完成
+                            </span>
+                            <span class="download-date">2024-01-20</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 下载中状态的卡片 -->
+                <div class="download-card">
+                    <!-- ... [保持原有内容] ... -->
+                </div>
+
+                <!-- 错误状态的卡片 -->
+                <div class="download-card">
+                    <!-- ... [保持原有内容] ... -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 功能介绍区 -->
+        <section class="features">
+            <h2>核心功能</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🚀 快速下载</h3>
+                    <p>支持单视频和批量下载，多种清晰度可选</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📊 下载管理</h3>
+                    <p>实时进度显示，支持断点续传</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💾 视频库管理</h3>
+                    <p>分类系统，标签管理，快速检索</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🎯 智能下载</h3>
+                    <p>智能识别视频信息，自动分类存储</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>© 2024 B站视频下载器 - 让下载更简单</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 
