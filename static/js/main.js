@@ -145,19 +145,38 @@ class DownloadManager {
 
     // 连接WebSocket监听下载进度
     connectWebSocket(taskId) {
-        const ws = new WebSocket(`${WS_BASE_URL}/progress/${taskId}`);
+        // 使用 Socket.IO 替代原生 WebSocket
+        const socket = io('/ws/progress');
         
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            this.updateDownloadProgress(taskId, data);
-        };
+        socket.on('connect', () => {
+            console.log('WebSocket 连接成功');
+        });
+        
+        socket.on('download_progress', (data) => {
+            if (data.taskId === taskId) {
+                this.updateDownloadProgress(taskId, data);
+            }
+        });
 
-        ws.onerror = (error) => {
-            console.error('WebSocket错误:', error);
+        socket.on('download_complete', (data) => {
+            if (data.taskId === taskId) {
+                this.updateDownloadStatus(taskId, DownloadStatus.COMPLETED);
+            }
+        });
+
+        socket.on('download_error', (data) => {
+            if (data.taskId === taskId) {
+                this.updateDownloadStatus(taskId, DownloadStatus.ERROR);
+                console.error('下载错误:', data.error);
+            }
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('Socket.IO 连接错误:', error);
             this.updateDownloadStatus(taskId, DownloadStatus.ERROR);
-        };
+        });
 
-        this.downloadQueue.set(taskId, { ws });
+        this.downloadQueue.set(taskId, { socket });
     }
 
     // 更新下载进度
@@ -215,10 +234,10 @@ class DownloadManager {
             const card = document.querySelector(`.download-card[data-task-id="${taskId}"]`);
             card.remove();
             
-            // 关闭WebSocket连接
+            // 关闭 Socket.IO 连接
             const task = this.downloadQueue.get(taskId);
-            if (task && task.ws) {
-                task.ws.close();
+            if (task && task.socket) {
+                task.socket.disconnect();
             }
             this.downloadQueue.delete(taskId);
         } catch (error) {
@@ -234,7 +253,68 @@ class DownloadManager {
     }
 }
 
+// 添加设置相关的代码
+class Settings {
+    constructor() {
+        this.dialog = document.getElementById('settingsDialog');
+        this.settingsBtn = document.getElementById('settingsBtn');
+        this.closeBtn = document.getElementById('closeDialogBtn');
+        this.saveBtn = document.getElementById('saveCookiesBtn');
+        this.cookiesInput = document.getElementById('cookiesInput');
+        
+        this.initEventListeners();
+    }
+    
+    initEventListeners() {
+        this.settingsBtn.addEventListener('click', () => this.showDialog());
+        this.closeBtn.addEventListener('click', () => this.hideDialog());
+        this.saveBtn.addEventListener('click', () => this.saveCookies());
+        
+        // 点击对话框外部关闭
+        this.dialog.addEventListener('click', (e) => {
+            if (e.target === this.dialog) {
+                this.hideDialog();
+            }
+        });
+    }
+    
+    showDialog() {
+        this.dialog.style.display = 'flex';
+    }
+    
+    hideDialog() {
+        this.dialog.style.display = 'none';
+    }
+    
+    async saveCookies() {
+        const cookies = this.cookiesInput.value.trim();
+        if (!cookies) {
+            alert('请输入cookies');
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/cookies', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ cookies })
+            });
+            
+            if (!response.ok) throw new Error('保存失败');
+            
+            alert('cookies保存成功！');
+            this.hideDialog();
+        } catch (error) {
+            console.error('保存cookies失败:', error);
+            alert('保存失败，请重试！');
+        }
+    }
+}
+
 // 初始化下载管理器
 document.addEventListener('DOMContentLoaded', () => {
     window.downloadManager = new DownloadManager();
+    window.settings = new Settings();
 }); 

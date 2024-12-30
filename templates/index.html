@@ -16,9 +16,35 @@
                 <li><a href="#">下载管理</a></li>
                 <li><a href="#">视频库</a></li>
                 <li><a href="#">数据统计</a></li>
+                <li><a href="#" id="settingsBtn">⚙️ 设置</a></li>
             </ul>
         </nav>
     </header>
+
+    <!-- 添加设置对话框 -->
+    <div id="settingsDialog" class="dialog" style="display: none;">
+        <div class="dialog-content">
+            <h2>设置</h2>
+            <div class="settings-section">
+                <h3>B站登录信息</h3>
+                <p class="help-text">需要B站登录cookies才能下载高清视频。获取方法：</p>
+                <ol class="help-text">
+                    <li>在浏览器中登录B站</li>
+                    <li>按 F12 打开开发者工具</li>
+                    <li>切换到 Network 标签页</li>
+                    <li>刷新页面</li>
+                    <li>在请求列表中找到 bilibili.com 的请求</li>
+                    <li>在请求头中找到 Cookie 字段</li>
+                    <li>复制整个 Cookie 值粘贴到下面</li>
+                </ol>
+                <textarea id="cookiesInput" placeholder="在此粘贴B站cookies..." rows="5"></textarea>
+                <div class="dialog-buttons">
+                    <button id="saveCookiesBtn">保存</button>
+                    <button id="closeDialogBtn">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- 主要内容区 -->
     <main class="main-container">
@@ -105,6 +131,7 @@
         <p>© 2024 B站视频下载器 - 让下载更简单</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html> 
